@@ -14,21 +14,28 @@ datasource db {
 }
 
 
-model Todo {
+model Task {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   description     String   @db.VarChar(255)
   status     String   @db.VarChar(255)
+  title     String   @db.VarChar(255)
+  deadline   DateTime   
+  
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
 }
+
 
 
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
   name    String?
-  todos   Todo[]
+  todos   Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+   
   
 }
