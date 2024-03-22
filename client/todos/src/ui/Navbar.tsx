@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Button } from '../components/ui/button'
 
 export const Navbar = () => {
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
 
   console.log(isAuthenticated)
   return (
@@ -25,7 +25,7 @@ export const Navbar = () => {
                     <Button onClick={() => loginWithRedirect()}>Login</Button>
                   )}
 
-                  {isAuthenticated && (
+                  {isAuthenticated && !isLoading && (
                     <Button onClick={() => logout()}>Logout</Button>
                   )}
                 </div>

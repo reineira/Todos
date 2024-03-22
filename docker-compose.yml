@@ -2,11 +2,13 @@ version: '3.8'
 
 services:
   frontend:
+    container_name: todo_frontend
     build: ./client/todos
     ports:
       - '5173:5173'
 
   backend:
+    container_name: todo_backend
     build: ./server
     ports:
       - '5000:5000'

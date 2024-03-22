@@ -15,6 +15,12 @@ app.use(express.json()) //req.body
 
 app.post('/todos', async (req, res) => {
   try {
+    let user = await prisma.user.findUnique({
+      where: {
+        email: req.body.user.email,
+      },
+    })
+
     let due = new Date(req.body.task.deadline)
 
     let task = {
@@ -23,12 +29,6 @@ app.post('/todos', async (req, res) => {
       deadline: due,
       status: req.body.task.status,
     }
-
-    let user = await prisma.user.findUnique({
-      where: {
-        email: req.body.user.email,
-      },
-    })
 
     console.log(user)
 
@@ -76,20 +76,44 @@ app.get('/todos/:email', async (req, res) => {
       },
     })
 
-    let todos = await prisma.task.findMany({
-      where: {
-        authorId: user.id,
-      },
-      select: {
-        title: true,
-        description: true,
-        status: true,
-        deadline: true,
-      },
-    })
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: req.params.email,
+          name: '',
+        },
+      })
 
-    console.log(todos)
-    res.json(todos)
+      console.log(user)
+    }
+
+    if (!user.email) {
+      let newUser = await prisma.user.create({
+        data: {
+          ...req.body.user,
+          todos: {
+            create: task,
+          },
+        },
+        include: {
+          todos: true,
+        },
+      })
+    } else {
+      let todos = await prisma.task.findMany({
+        where: {
+          authorId: user.id,
+        },
+        select: {
+          title: true,
+          description: true,
+          status: true,
+          deadline: true,
+        },
+      })
+      console.log(todos)
+      res.json(todos)
+    }
   } catch (error) {
     console.error(error)
   }

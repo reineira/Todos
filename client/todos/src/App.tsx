@@ -13,11 +13,18 @@ function App() {
       <Navbar />
       {!user?.name && !isLoading && (
         <MaxWidthWrapper>
-          <main className=' flex min-h-screen flex-col justify-center '>
+          <main className=' flex min-h-screen flex-col items-center justify-center'>
             <Button onClick={() => loginWithRedirect()}>
               {' '}
               Please Login to start posting
             </Button>
+          </main>
+        </MaxWidthWrapper>
+      )}
+      {isLoading && (
+        <MaxWidthWrapper>
+          <main className=' flex min-h-screen flex-col items-center justify-center '>
+            Loading...
           </main>
         </MaxWidthWrapper>
       )}

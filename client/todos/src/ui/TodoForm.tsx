@@ -45,8 +45,6 @@ const TodoForm = () => {
 
   const { user } = useAuth0()
 
-  console.log(user)
-
   const {
     isPending,
     isError,
@@ -68,10 +66,6 @@ const TodoForm = () => {
     console.log(error.message)
   }
 
-  if (isPending) {
-    console.log('is Pending')
-  }
-
   //Mutations
 
   const { mutateAsync: addTodoMutation } = useMutation({
@@ -82,12 +76,13 @@ const TodoForm = () => {
   })
 
   const onSubmit = async (data: Task) => {
+    console.log(data)
     try {
       setOpen(false)
       const nTodo = { task: { ...data }, user: loginUser }
-      const newTodo = await addTodoMutation(nTodo)
 
       console.log(nTodo)
+      const newTodo = await addTodoMutation(nTodo)
     } catch (error) {
       console.log(error)
     }
@@ -130,7 +125,7 @@ const TodoForm = () => {
                     className='mb-3'
                     type='date'
                   />
-                  {errors.deadline && <span>This field is required</span>}'{' '}
+                  {errors.deadline && <span>This field is required</span>}
                   <select {...register('status')} className='mb-3 block  p-4'>
                     <option value='IN_PROGRESS'>IN progress</option>
                     <option value='TODO'>Todo</option>
