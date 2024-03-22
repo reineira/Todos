@@ -91,7 +91,7 @@ app.get('/todos/:email', async (req, res) => {
     console.log(todos)
     res.json(todos)
   } catch (error) {
-    console.error(err.message)
+    console.error(err)
   }
 })
 
