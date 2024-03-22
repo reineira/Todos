@@ -62,7 +62,7 @@ app.post('/todos', async (req, res) => {
       res.json(newTask)
     }
   } catch (err) {
-    console.error(err.message)
+    console.error(err)
   }
 })
 
