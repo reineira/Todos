@@ -14,7 +14,9 @@ services:
       - postgres # Backend depends on PostgreSQL being up
 
   postgres:
-    image: postgres:alpine
+    image: postgres:latest
+    ports:
+      - '5432:5432'
     environment:
       POSTGRES_PASSWORD: dolcevita
       POSTGRES_USER: postgres

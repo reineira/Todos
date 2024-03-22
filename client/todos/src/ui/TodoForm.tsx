@@ -83,13 +83,9 @@ const TodoForm = () => {
 
   const onSubmit = async (data: Task) => {
     try {
-      console.log('####################')
-      console.log(data)
-      const nTodo = { task: { ...data }, user: loginUser }
-
-      const newTodo = await addTodoMutation(nTodo)
-
       setOpen(false)
+      const nTodo = { task: { ...data }, user: loginUser }
+      const newTodo = await addTodoMutation(nTodo)
 
       console.log(nTodo)
     } catch (error) {
