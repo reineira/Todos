@@ -24,8 +24,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
 import { useState } from 'react'
-import { LucideTable } from 'lucide-react'
 
 const TodoForm = () => {
   const [open, setOpen] = useState<boolean>(false)
@@ -76,13 +83,13 @@ const TodoForm = () => {
 
   const onSubmit = async (data: Task) => {
     try {
+      console.log('####################')
+      console.log(data)
       const nTodo = { task: { ...data }, user: loginUser }
 
       const newTodo = await addTodoMutation(nTodo)
 
-      if (newTodo) {
-        setOpen(false)
-      }
+      setOpen(false)
 
       console.log(nTodo)
     } catch (error) {
@@ -96,19 +103,17 @@ const TodoForm = () => {
       <main className=' flex min-h-screen flex-col justify-center '>
         <div className='mt-8 flex flex-grow flex-col items-center'>
           <h1 className='mb-4 '> Please enter your tasks below </h1>
-          {!user?.name && <Button> Login to start posting </Button>}
+
           {user?.name && (
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger>Add Todo</DialogTrigger>
+              <DialogTrigger>
+                <Button className='mb-3'> Add Todo</Button>
+              </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>
                     Please fill in the form to add a new task
                   </DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Input
@@ -117,32 +122,26 @@ const TodoForm = () => {
                     className='mb-3'
                   />
                   {errors.title && <span>This field is required</span>}
-
                   <Input
                     {...register('description', { required: true })}
-                    placeholder='Enter title of task'
+                    placeholder='Enter description of task'
                     className='mb-3'
                   />
-
                   {errors.description && <span>This field is required</span>}
-
                   <Input
                     {...register('deadline', { required: true })}
                     placeholder='Enter deadline'
                     className='mb-3'
                     type='date'
                   />
-                  {errors.deadline && <span>This field is required</span>}
-
-                  <select {...(register('status'), { required: true })}>
-                    <option value='TODO'>TODO</option>
-                    <option value='COMPLETED'>COMPLETED</option>
-                    <option value='IN_PROGRESS'>IN_PROGRESS</option>
+                  {errors.deadline && <span>This field is required</span>}'{' '}
+                  <select {...register('status')} className='mb-3 block  p-4'>
+                    <option value='IN_PROGRESS'>IN progress</option>
+                    <option value='TODO'>Todo</option>
+                    <option value='COMPLETED'>Completed</option>
                   </select>
-
                   {errors.status && <span>This field is required</span>}
-
-                  <Button>Add Task</Button>
+                  <Button className='mt-4'>Add Task</Button>
                 </form>
               </DialogContent>
             </Dialog>

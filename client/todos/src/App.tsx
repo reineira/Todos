@@ -1,15 +1,26 @@
 import { Navbar } from './ui/Navbar'
 import { cn } from '@/lib/utils'
 import TodoForm from './ui/TodoForm'
-
 import { useAuth0 } from '@auth0/auth0-react'
+import { Button } from './components/ui/button'
+import MaxWidthWrapper from './ui/MaxWidthWrapper'
 
 function App() {
-  const { user } = useAuth0()
+  const { loginWithRedirect, user, isLoading } = useAuth0()
 
   return (
     <div className={cn('antialised relative h-full font-sans')}>
       <Navbar />
+      {!user?.name && !isLoading && (
+        <MaxWidthWrapper>
+          <main className=' flex min-h-screen flex-col justify-center '>
+            <Button onClick={() => loginWithRedirect()}>
+              {' '}
+              Please Login to start posting
+            </Button>
+          </main>
+        </MaxWidthWrapper>
+      )}
       {user && <TodoForm />}
     </div>
   )
