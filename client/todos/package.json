@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start:production": "vite",
+    "start:production": "vite --host",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
+  },
+  "server": {
+    "host": true
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
