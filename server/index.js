@@ -50,9 +50,16 @@ app.post('/todos', async (req, res) => {
           ...task,
           author: { connect: { id: user.id } },
         },
+        select: {
+          title: true,
+          description: true,
+          status: true,
+          deadline: true,
+        },
       })
 
       console.log(newTask)
+      res.json(newTask)
     }
   } catch (err) {
     console.error(err.message)

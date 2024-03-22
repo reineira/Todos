@@ -7,6 +7,15 @@ import { createTodo, fetchTodos } from '../api/index'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -14,25 +23,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import TodoList from './TodoList'
 
 import { useState } from 'react'
-import { Divide } from 'lucide-react'
+import { LucideTable } from 'lucide-react'
 
 const TodoForm = () => {
   const [open, setOpen] = useState<boolean>(false)
-  const [todoList, setTodos] = useState<[]>([])
 
-  console.log(todoList)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Task>()
 
   const { user } = useAuth0()
 
-  const queryClient = useQueryClient()
-
-  const loginUser = {
-    name: user?.name,
-    email: user?.email,
-  }
+  console.log(user)
 
   const {
     isPending,
@@ -40,12 +46,16 @@ const TodoForm = () => {
     data: data,
     error,
   } = useQuery({
-    queryKey: ['todos', user?.email],
+    queryKey: ['todo'],
     queryFn: () => fetchTodos(user?.email),
-    onSuccess: () => {
-      setTodos(data?.data)
-    },
   })
+
+  const loginUser = {
+    name: user?.name,
+    email: user?.email,
+  }
+
+  const queryClient = useQueryClient()
 
   if (isError) {
     console.log(error.message)
@@ -55,31 +65,24 @@ const TodoForm = () => {
     console.log('is Pending')
   }
 
-  if (data) {
-    console.log(data?.data)
-    console.log(typeof data)
-  }
-
   //Mutations
 
   const { mutateAsync: addTodoMutation } = useMutation({
     mutationFn: createTodo,
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos'])
+      queryClient.invalidateQueries({ queryKey: ['todo'] })
     },
   })
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Task>()
-  const onSubmit: SubmitHandler<Task> = async (data: Task) => {
+  const onSubmit = async (data: Task) => {
     try {
       const nTodo = { task: { ...data }, user: loginUser }
-      setOpen(false)
+
       const newTodo = await addTodoMutation(nTodo)
+
+      if (newTodo) {
+        setOpen(false)
+      }
 
       console.log(nTodo)
     } catch (error) {
@@ -131,11 +134,11 @@ const TodoForm = () => {
                   />
                   {errors.deadline && <span>This field is required</span>}
 
-                  <Input
-                    {...register('status', { required: true })}
-                    placeholder='Enter description of task'
-                    className='mb-3'
-                  />
+                  <select {...(register('status'), { required: true })}>
+                    <option value='TODO'>TODO</option>
+                    <option value='COMPLETED'>COMPLETED</option>
+                    <option value='IN_PROGRESS'>IN_PROGRESS</option>
+                  </select>
 
                   {errors.status && <span>This field is required</span>}
 
@@ -145,9 +148,24 @@ const TodoForm = () => {
             </Dialog>
           )}
 
-          {data?.data.map((todo) => {
-            return <div> {todo.description}</div>
-          })}
+          <div className='flex flex-wrap gap-3'>
+            {data?.data.map((todo: Task) => {
+              return (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{todo.title}</CardTitle>
+                    <CardDescription>{todo.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p> Deadline :{todo.deadline}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <p>Status : {todo.status} </p>
+                  </CardFooter>
+                </Card>
+              )
+            })}
+          </div>
         </div>
       </main>
     </MaxWidthWrapper>

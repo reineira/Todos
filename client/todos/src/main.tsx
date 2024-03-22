@@ -3,13 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { Auth0Provider } from '@auth0/auth0-react'
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const domain: any = import.meta.env.VITE_APP_AUTH0_DOMAIN
 const clientId: any = import.meta.env.VITE_APP_AUTH0_CLIENT_ID
